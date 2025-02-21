@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-'use client';
-import { initializeApp } from "firebase/app";
+// src/shared/firebase/FirebaseContext.tsx
+"use client";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -8,15 +8,16 @@ import {
   GithubAuthProvider,
   signInWithPopup,
   signInWithEmailAndPassword,
-  getAuth,
   signOut,
   User,
-  UserCredential
+  UserCredential,
 } from "firebase/auth";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref as dbRef, update } from "firebase/database";
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { getFirestore, doc, setDoc, getDoc, Firestore } from "firebase/firestore";
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, FirebaseStorage } from "firebase/storage";
-import { getDatabase, ref as dbRef, update, Database } from "firebase/database";
+
+import { auth, firestore, storage, database } from "./firebase";
 
 interface FirebaseContextType {
   user: User | null;
@@ -25,9 +26,6 @@ interface FirebaseContextType {
   signInWithGoogle: () => Promise<void>;
   signInWithGithub: () => Promise<void>;
   signOut: () => Promise<void>;
-  firestore: Firestore;
-  storage: FirebaseStorage;
-  database: Database;
   uploadFile: (file: File, path: string) => Promise<string>;
   addTeam: (uid: string, data: any) => Promise<void>; // Replace 'any' with a specific type for team data if desired
   getTeamByUID: (uid: string) => Promise<any>; // Replace 'any' with a specific type for team data if desired
@@ -36,48 +34,18 @@ interface FirebaseContextType {
 
 const FirebaseContext = createContext<FirebaseContextType | null>(null);
 
-export const useFirebase = () => {
-  const context = useContext(FirebaseContext);
-  if (!context) {
-    throw new Error("useFirebase must be used within a FirebaseProvider");
-  }
-  return context;
-};
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCWdekgRRTQTjD65RMVY8ae53DorZVcmGE",
-  authDomain: "friday-f460c.firebaseapp.com",
-  projectId: "friday-f460c",
-  storageBucket: "friday-f460c.firebasestorage.app",
-  messagingSenderId: "613742547596",
-  appId: "1:613742547596:web:c98c5a4171f7664406a1a9",
-  measurementId: "G-YVD94TLSGJ"
-};
-
-export const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-interface FirebaseProviderProps {
-  children: ReactNode;
-}
-
-export function FirebaseProvider({ children }: FirebaseProviderProps) {
+export const FirebaseProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-    });
-    return () => unsubscribe(); // Cleanup subscription on unmount
+    const unsubscribe = onAuthStateChanged(auth, (user) => setUser(user));
+    return () => unsubscribe();
   }, []);
-
-  const firestore = getFirestore(app);
-  const storage = getStorage(app);
-  const database = getDatabase(app);
 
   const signUp = async (email: string, password: string) => {
     try {
       const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+      // Optionally, here you could also create a document for the new user in Firestore
       return userCredentials;
     } catch (error) {
       console.error("Error signing up:", error);
@@ -96,8 +64,8 @@ export function FirebaseProvider({ children }: FirebaseProviderProps) {
 
   const signInWithGoogle = async () => {
     try {
-      const googleProvider = new GoogleAuthProvider();
-      await signInWithPopup(auth, googleProvider);
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
     } catch (error) {
       console.error("Error signing in with Google:", error);
       throw error;
@@ -106,30 +74,37 @@ export function FirebaseProvider({ children }: FirebaseProviderProps) {
 
   const signInWithGithub = async () => {
     try {
-      const githubProvider = new GithubAuthProvider();
-      await signInWithPopup(auth, githubProvider);
+      const provider = new GithubAuthProvider();
+      await signInWithPopup(auth, provider);
     } catch (error) {
       console.error("Error signing in with GitHub:", error);
       throw error;
     }
   };
 
-  const signOutUser = () => signOut(auth);
-
-  const uploadFile = async (file: File, path: string) => {
-    const fileRef = storageRef(storage, path);
-    await uploadBytes(fileRef, file);
-    return getDownloadURL(fileRef);
+  const signOutUser = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Error signing out:", error);
+      throw error;
+    }
   };
 
-  const addTeam = async (uid: string, data: unknown) => {
-    const docRef = doc(firestore, "Teams", uid);
-    return setDoc(docRef, data);
+  const uploadFile = async (file: File, path: string) => {
+    const fileReference = storageRef(storage, path);
+    await uploadBytes(fileReference, file);
+    return getDownloadURL(fileReference);
+  };
+
+  const addTeam = async (uid: string, data: any) => {
+    const teamRef = doc(firestore, "Teams", uid);
+    await setDoc(teamRef, data);
   };
 
   const getTeamByUID = async (uid: string) => {
-    const docRef = doc(firestore, "Teams", uid);
-    const docSnap = await getDoc(docRef);
+    const teamRef = doc(firestore, "Teams", uid);
+    const docSnap = await getDoc(teamRef);
     if (docSnap.exists()) {
       return docSnap.data();
     } else {
@@ -157,9 +132,6 @@ export function FirebaseProvider({ children }: FirebaseProviderProps) {
         signInWithGoogle,
         signInWithGithub,
         signOut: signOutUser,
-        firestore,
-        storage,
-        database,
         uploadFile,
         addTeam,
         getTeamByUID,
@@ -169,4 +141,12 @@ export function FirebaseProvider({ children }: FirebaseProviderProps) {
       {children}
     </FirebaseContext.Provider>
   );
-}
+};
+
+export const useFirebase = () => {
+  const context = useContext(FirebaseContext);
+  if (!context) {
+    throw new Error("useFirebase must be used within a FirebaseProvider");
+  }
+  return context;
+};

@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { FaGoogle, FaGithub } from "react-icons/fa";
-import { useFirebase } from "@/app/firebase"; // adjust the path as needed
+import React from 'react';
+import { FaGoogle, FaGithub } from 'react-icons/fa';
+import { useFirebase } from '@/firebase/FirebaseContext';
+import { useState } from 'react';
 import { useRouter, useSearchParams } from "next/navigation";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -130,3 +131,4 @@ const SignUp: React.FC = () => {
 };
 
 export default SignUp;
+

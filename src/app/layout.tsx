@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Urbanist, Silkscreen, Pixelify_Sans } from "next/font/google";
 import "./globals.css";
-import { FirebaseProvider } from "./firebase";
+import { FirebaseProvider } from "@/firebase/FirebaseContext";
 
 const urbanist = Urbanist({
   variable: "--font-sans",
