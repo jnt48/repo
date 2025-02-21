@@ -2,6 +2,7 @@
 'use client';
 import { initializeApp } from "firebase/app";
 import {
+  createUserWithEmailAndPassword,
   onAuthStateChanged,
   GoogleAuthProvider,
   GithubAuthProvider,
@@ -10,8 +11,7 @@ import {
   getAuth,
   signOut,
   User,
-  UserCredential,
-  createUserWithEmailAndPassword
+  UserCredential
 } from "firebase/auth";
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { getFirestore, doc, setDoc, getDoc, Firestore } from "firebase/firestore";
@@ -29,8 +29,8 @@ interface FirebaseContextType {
   storage: FirebaseStorage;
   database: Database;
   uploadFile: (file: File, path: string) => Promise<string>;
-  addTeam: (uid: string, data: any) => Promise<void>;
-  getTeamByUID: (uid: string) => Promise<any>;
+  addTeam: (uid: string, data: any) => Promise<void>; // Replace 'any' with a specific type for team data if desired
+  getTeamByUID: (uid: string) => Promise<any>; // Replace 'any' with a specific type for team data if desired
   updateQuestionStatus: (id: string, isActive: boolean) => Promise<string>;
 }
 
@@ -44,7 +44,6 @@ export const useFirebase = () => {
   return context;
 };
 
-
 const firebaseConfig = {
   apiKey: "AIzaSyCWdekgRRTQTjD65RMVY8ae53DorZVcmGE",
   authDomain: "friday-f460c.firebaseapp.com",
@@ -55,7 +54,7 @@ const firebaseConfig = {
   measurementId: "G-YVD94TLSGJ"
 };
 
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 interface FirebaseProviderProps {
@@ -63,11 +62,11 @@ interface FirebaseProviderProps {
 }
 
 export function FirebaseProvider({ children }: FirebaseProviderProps) {
-  const [user, setUser ] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser (user);
+      setUser(user);
     });
     return () => unsubscribe(); // Cleanup subscription on unmount
   }, []);
@@ -115,14 +114,7 @@ export function FirebaseProvider({ children }: FirebaseProviderProps) {
     }
   };
 
-  const signOutUser  = async () => {
-    try {
-      await signOut(auth);
-    } catch (error) {
-      console.error("Error signing out:", error);
-      throw error;
-    }
-  };
+  const signOutUser = () => signOut(auth);
 
   const uploadFile = async (file: File, path: string) => {
     const fileRef = storageRef(storage, path);
@@ -147,7 +139,7 @@ export function FirebaseProvider({ children }: FirebaseProviderProps) {
 
   const updateQuestionStatus = async (id: string, isActive: boolean) => {
     try {
-      const questionRef = dbRef(database, `Question4/${id}`);
+      const questionRef = dbRef(database, 'Question4/${id}');
       await update(questionRef, { isActive });
       return "Update successful!";
     } catch (error) {
@@ -164,7 +156,7 @@ export function FirebaseProvider({ children }: FirebaseProviderProps) {
         signIn,
         signInWithGoogle,
         signInWithGithub,
-        signOut: signOutUser ,
+        signOut: signOutUser,
         firestore,
         storage,
         database,

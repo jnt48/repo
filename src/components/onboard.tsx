@@ -1,4 +1,3 @@
-// app/onboarding/OnboardingModal.tsx
 "use client";
 
 import { useState } from "react";
@@ -9,6 +8,7 @@ type Step = "welcome" | "customize" | "tutorial" | "summary";
 
 export default function OnboardingModal({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState<Step>("welcome");
+  const [username, setUsername] = useState<string>("");
 
   const nextStep = () => {
     if (step === "welcome") setStep("customize");
@@ -38,7 +38,13 @@ export default function OnboardingModal({ onClose }: { onClose: () => void }) {
         <p className="mb-6">
           Choose your avatar, set a nickname, and let your personality shine!
         </p>
-        {/* Insert form elements for avatar and nickname customization */}
+        <input 
+          type="text" 
+          placeholder="Enter your username" 
+          value={username} 
+          onChange={(e) => setUsername(e.target.value)} 
+          className="border border-gray-300 p-2 rounded w-full max-w-xs mx-auto"
+        />
       </div>
     ),
     tutorial: (
@@ -79,29 +85,29 @@ export default function OnboardingModal({ onClose }: { onClose: () => void }) {
           </motion.div>
         </AnimatePresence>
         <div className="mt-8 flex justify-between">
-  {step !== "welcome" && (
-    <button
-      onClick={prevStep}
-      className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-    >
-      Back
-    </button>
-  )}
-  {step === "summary" ? (
-    <Link href="/auth/signup">
-      <button className="font-pixel text-lg sm:text-xl md:text-2xl bg-violet-600 text-background px-4 py-2 sm:px-5 sm:py-2 md:px-6 md:py-3 rounded-md hover:bg-purple-500 transition-colors duration-150 hover:text-white shadow-md">
-        Sign Up
-      </button>
-    </Link>
-  ) : (
-    <button
-      onClick={nextStep}
-      className="ml-auto px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-    >
-      Next
-    </button>
-  )}
-</div>
+          {step !== "welcome" && (
+            <button
+              onClick={prevStep}
+              className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+            >
+              Back
+            </button>
+          )}
+          {step === "summary" ? (
+            <Link href={`/auth/signup?username=${encodeURIComponent(username)}`}>
+              <button className="font-pixel text-lg sm:text-xl md:text-2xl bg-violet-600 text-background px-4 py-2 sm:px-5 sm:py-2 md:px-6 md:py-3 rounded-md hover:bg-purple-500 transition-colors duration-150 hover:text-white shadow-md">
+                Sign Up
+              </button>
+            </Link>
+          ) : (
+            <button
+              onClick={nextStep}
+              className="ml-auto px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Next
+            </button>
+          )}
+        </div>
       </motion.div>
     </div>
   );

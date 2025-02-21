@@ -1,8 +1,14 @@
+import CodeEditor from '@/components/CodeEditor'
 import React from 'react'
 
 const dashboard = () => {
   return (
-    <div>dashboard</div>
+    <div>dashboard
+      
+
+
+    </div>
+
   )
 }
 
