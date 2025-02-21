@@ -1,11 +1,12 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FaGoogle, FaGithub } from 'react-icons/fa';
 import { useFirebase } from '@/firebase/FirebaseContext';
 import { useState } from 'react';
 import { useRouter, useSearchParams } from "next/navigation";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { firestore } from '@/firebase/firebase';
 
 // Helper: Creates default progress for a subject with 10 modules.
 const createDefaultSubjectProgress = () => {
@@ -43,7 +44,7 @@ const initializeUserProgress = async (
 };
 
 const SignUp: React.FC = () => {
-  const { signInWithGoogle, signInWithGithub, user, firestore } = useFirebase();
+  const { signInWithGoogle, signInWithGithub, user } = useFirebase();
   const router = useRouter();
   const searchParams = useSearchParams();
   // Retrieve custom username from query parameters if available.
@@ -76,10 +77,12 @@ const SignUp: React.FC = () => {
     try {
       await signInWithGoogle();
       // onAuthStateChanged in your FirebaseProvider will update the user.
+
     } catch (err: any) {
       setError(err.message);
     } finally {
       setLoading(false);
+
     }
   };
 
@@ -93,6 +96,7 @@ const SignUp: React.FC = () => {
       setError(err.message);
     } finally {
       setLoading(false);
+      router.push("/dashboard")
     }
   };
 

@@ -12,12 +12,12 @@ import {
   User,
   UserCredential,
 } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, getFirestore } from "firebase/firestore";
 import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import { ref as dbRef, update } from "firebase/database";
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
-import { auth, firestore, storage, database } from "./firebase";
+import { auth, storage, database } from "@/firebase/firebase";
 
 interface FirebaseContextType {
   user: User | null;
@@ -36,7 +36,7 @@ const FirebaseContext = createContext<FirebaseContextType | null>(null);
 
 export const FirebaseProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-
+  const firestore=getFirestore();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => setUser(user));
     return () => unsubscribe();
