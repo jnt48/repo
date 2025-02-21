@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Urbanist, Silkscreen, Pixelify_Sans } from "next/font/google";
 import "./globals.css";
+import { FirebaseProvider } from "./firebase";
 
 const urbanist = Urbanist({
   variable: "--font-sans",
@@ -33,7 +34,9 @@ export default function RootLayout({
       <body
         className={`${pixelifySans.variable} ${urbanist.variable} ${silkscreen.variable} antialiased font-urbanist`}
       >
+        <FirebaseProvider>
         {children}
+        </FirebaseProvider>
       </body>
     </html>
   );
