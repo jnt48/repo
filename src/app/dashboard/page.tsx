@@ -1,9 +1,13 @@
+"use client"
+
+import { useUser } from '@/firebase/useUser'
 import React from 'react'
 
-const dashboard = () => {
+const Dashboard = () => {
+  const user = useUser();
   return (
-    <div>dashboard</div>
+    <div>Welcome, {user ? user.email : "Guest"}!</div>
   )
 }
 
-export default dashboard
+export default Dashboard
