@@ -3,7 +3,7 @@ import { supabase } from './supabase';
 
 // Sign in with Google
 export const signInWithGoogle = async () => {
-    const redirectUrl = `/auth/callback`;
+    const redirectUrl = `http://localhost:3000/auth/callback`;
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
