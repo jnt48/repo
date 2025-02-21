@@ -2,22 +2,22 @@
 // src/shared/firebase/FirebaseContext.tsx
 "use client";
 import {
+  createUserWithEmailAndPassword,
   onAuthStateChanged,
   GoogleAuthProvider,
   GithubAuthProvider,
   signInWithPopup,
   signInWithEmailAndPassword,
   signOut,
-  createUserWithEmailAndPassword,
   User,
   UserCredential,
 } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, getFirestore } from "firebase/firestore";
 import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import { ref as dbRef, update } from "firebase/database";
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
-import { auth, firestore, storage, database } from "./firebase";
+import { auth, storage, database } from "@/firebase/firebase";
 
 interface FirebaseContextType {
   user: User | null;
@@ -27,8 +27,8 @@ interface FirebaseContextType {
   signInWithGithub: () => Promise<void>;
   signOut: () => Promise<void>;
   uploadFile: (file: File, path: string) => Promise<string>;
-  addTeam: (uid: string, data: any) => Promise<void>;
-  getTeamByUID: (uid: string) => Promise<any>;
+  addTeam: (uid: string, data: any) => Promise<void>; // Replace 'any' with a specific type for team data if desired
+  getTeamByUID: (uid: string) => Promise<any>; // Replace 'any' with a specific type for team data if desired
   updateQuestionStatus: (id: string, isActive: boolean) => Promise<string>;
 }
 
@@ -36,7 +36,7 @@ const FirebaseContext = createContext<FirebaseContextType | null>(null);
 
 export const FirebaseProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-
+  const firestore=getFirestore();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => setUser(user));
     return () => unsubscribe();
@@ -114,7 +114,7 @@ export const FirebaseProvider = ({ children }: { children: ReactNode }) => {
 
   const updateQuestionStatus = async (id: string, isActive: boolean) => {
     try {
-      const questionRef = dbRef(database, `Question4/${id}`);
+      const questionRef = dbRef(database, 'Question4/${id}');
       await update(questionRef, { isActive });
       return "Update successful!";
     } catch (error) {
