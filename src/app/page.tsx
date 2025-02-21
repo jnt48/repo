@@ -1,4 +1,6 @@
+import Chatbot from "@/components/Chatbot";
 import Image from "next/image";
+import Link from "next/link";
 import Login from "./Login";
 
 export default function Home() {
