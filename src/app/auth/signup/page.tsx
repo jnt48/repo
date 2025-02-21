@@ -32,6 +32,7 @@ const initializeUserProgress = async (
   const docSnap = await getDoc(userDocRef);
   if (!docSnap.exists()) {
     const userDoc = {
+      socre:0,
       uid,
       username,
       python: createDefaultSubjectProgress(),
