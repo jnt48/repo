@@ -1,7 +1,5 @@
 import Image from "next/image";
 
-import CodeEditor from "@/components/CodeEditor";
-
 export default function Home() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-4">
@@ -21,7 +19,6 @@ export default function Home() {
         <button className="font-pixel text-lg sm:text-xl md:text-2xl bg-violet-600 text-background px-4 py-2 sm:px-5 sm:py-2 md:px-6 md:py-3 rounded-md hover:bg-purple-500 transition-colors duration-150 hover:text-white shadow-md">
           Get Started
         </button>
-        <CodeEditor/>
     </div>
     </main>
   );
