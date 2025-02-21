@@ -11,9 +11,12 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        cta: "#b8b8fd",
       },
       fontFamily: {
         urbanist: "var(--font-sans)",
+        silkscreen: "var(--font-silkscreen)",
+        pixel: "var(--font-pixelify-sans)",
       }
     },
   },
