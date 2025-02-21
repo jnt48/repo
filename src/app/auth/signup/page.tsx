@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import React from 'react';
@@ -18,8 +19,12 @@ const SignUp = () => {
       try {
         await signInWithGoogle();
         router.push("/dashboard"); // redirect after login
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unknown error occurred");
+        }
       } finally {
         setLoading(false);
       }
@@ -31,8 +36,12 @@ const SignUp = () => {
       try {
         await signInWithGithub();
         router.push("/dashboard"); // redirect after login
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unknown error occurred");
+        }
       } finally {
         setLoading(false);
       }

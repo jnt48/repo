@@ -37,15 +37,16 @@ const Chatbot: React.FC = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: userMessage.content }),
       });
-
+      
+      
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
       const edithMessage: Message = { id: Date.now() + 1, sender: "edith", content: data.response };
       setMessages((prev) => [...prev, edithMessage]);
-    } catch (error: unknown) {
-      const errorMessage: Message = { id: Date.now() + 2, sender: "edith", content: `Error: ${(error as Error).message}` };
+    } catch (error: any) {
+      const errorMessage: Message = { id: Date.now() + 2, sender: "edith", content: `Error: ${error.message}` };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
