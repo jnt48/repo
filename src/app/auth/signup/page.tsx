@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { FaGoogle, FaGithub } from 'react-icons/fa';
-import { useFirebase } from '@/app/firebase';
+import { useFirebase } from '@/firebase/FirebaseContext';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 const SignUp = () => {
