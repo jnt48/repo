@@ -1,9 +1,11 @@
+import Chatbot from "@/components/Chatbot";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-4">
-      <div className="mb-8">
+      <div className="">
         <Image
           src="/assets/pikalogin.svg"
           alt="Login"
@@ -16,9 +18,11 @@ export default function Home() {
         <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#4b4b4b]">
           The free, fun, and effective way to learn a language!
         </h1>
-        <button className="font-pixel text-lg sm:text-xl md:text-2xl bg-violet-600 text-background px-4 py-2 sm:px-5 sm:py-2 md:px-6 md:py-3 rounded-md hover:bg-purple-500 transition-colors duration-150 hover:text-white shadow-md">
-          Get Started
-        </button>
+        <Link href="/auth/signup">
+          <button className="font-pixel text-lg sm:text-xl md:text-2xl bg-violet-600 text-background px-4 py-2 sm:px-5 sm:py-2 md:px-6 md:py-3 rounded-md hover:bg-purple-500 transition-colors duration-150 hover:text-white shadow-md">
+            Get Started
+          </button>
+        </Link>
     </div>
     </main>
   );
