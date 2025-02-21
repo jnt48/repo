@@ -1,7 +1,7 @@
 'use client'
 
 import { getDoc, doc } from "firebase/firestore";
-import { useFirebase } from "../firebase";
+import { firestore } from "@/firebase/firebase"
 import { useEffect, useState } from "react";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { set } from "firebase/database";
@@ -9,8 +9,6 @@ import './page.css';
 
 export default function Page() {
     const [moduleData, setModuleData] = useState<any>(null);
-    const firebase = useFirebase();
-    const firestore = firebase.firestore;
 
     useEffect(() => {
         const fetchData = async () => {
