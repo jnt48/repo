@@ -9,6 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@codemirror/lang-cpp": "^6.0.2",
+    "@codemirror/lang-java": "^6.0.1",
+    "@codemirror/lang-javascript": "^6.2.3",
+    "@codemirror/lang-python": "^6.1.7",
+    "@codemirror/theme-one-dark": "^6.1.2",
+    "@uiw/react-codemirror": "^4.23.8",
     "@monaco-editor/react": "^4.7.0",
     "@supabase/supabase-js": "^2.48.1",
     "framer-motion": "^12.4.7",
